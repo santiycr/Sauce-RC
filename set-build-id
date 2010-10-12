@@ -1,0 +1,36 @@
+#!/bin/bash
+
+USAGE="usage: $(basename $0) ID"
+
+while getopts "h" opt
+do
+    case $opt in
+        h ) echo $USAGE; exit;;
+        * ) echo "error: unknown option" >&2; exit 1;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+if [ $# -ne 1 ]; then
+    echo $USAGE
+    exit 1
+fi
+
+pyver=controller/version.py
+iss=setup.iss
+platypus=mac/SauceRC.platypus
+new=$1
+
+
+cp $pyver $pyver.prev
+sed "s/build *= *.*/build = \"${new}\"/" $pyver.prev > $pyver
+rm $pyver.prev
+
+cp $iss $iss.prev
+sed "s/=Sauce-RC-1.1.build.*/=Sauce-RC-1.1.build.${new}/" $iss.prev > $iss
+rm $iss.prev
+
+cp $platypus $platypus.prev
+sed "s/1.1 build [^<]*/1.1 build ${new}/" $platypus.prev > $platypus
+rm $platypus.prev

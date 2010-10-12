@@ -1,0 +1,3 @@
+#!/bin/bash
+
+PYTHONPATH=$PYTHONPATH:$PWD nosetests -v -e cherrypy $@

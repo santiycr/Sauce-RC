@@ -1,0 +1,30 @@
+{
+    "allmodes-port": 4444,
+
+    "ondemand-username": "", 
+    "ondemand-access-key": "", 
+    "ondemand-record-video": true, 
+    "ondemand-max-duration": 1800, 
+    "ondemand-os": "Linux", 
+    "ondemand-browser": "firefox",
+    "ondemand-browser-version": "Any",
+    "ondemand-force" : false,
+    "ondemand-job-name" : "",
+
+    "selenium-proxyInjectionMode": false,
+    "selenium-profilesLocation": "",
+    "selenium-logfile": "",
+    "selenium-dontInjectRegex": "",
+    "selenium-browserSessionReuse": false,
+    "selenium-forcedBrowserMode": false,
+    "selenium-singleWindow": false,
+    "selenium-ensureCleanSession": false,
+    "selenium-browserSideLog": false,
+    "selenium-trustAllSSLCertificates": false,
+    "selenium-firefoxProfileTemplate": "",
+    "selenium-userJsInjection": "",
+    "selenium-timeout": 30,
+    "selenium-debug": false,
+    "selenium-userExtensions": "",
+    "selenium-avoidproxy": false
+}

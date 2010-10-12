@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ -z "$BUILD_NUMBER" ]; then
+    build=$(git show HEAD | head -1 | cut -d' ' -f2)
+else
+    build=$BUILD_NUMBER
+fi
+
+new_dmg=Sauce-RC-1.1.build.$build.dmg
+
+test -d dist || mkdir dist
+tar xzf mac/Base.dmg.gz -C dist/
+mv dist/Base.dmg dist/$new_dmg
+hdiutil mount dist/$new_dmg
+cp -r dist/Sauce\ RC.app /Volumes/Sauce\ RC/
+cp controller/static/license.html /Volumes/Sauce\ RC/
+hdiutil detach /Volumes/Sauce\ RC
+test -d Output || mkdir Output
+hdiutil convert dist/$new_dmg -format UDBZ -o Output/$new_dmg
+rm dist/$new_dmg

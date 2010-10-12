@@ -1,0 +1,24 @@
+#!/bin/bash
+
+USAGE="usage: $(basename $0)"
+
+while getopts "fh" opt
+do
+    case $opt in
+        h ) echo $USAGE; exit;;
+        f ) force="-f";;
+        * ) echo "error: unknown option" >&2; exit 1;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+if [ $# -ne 0 ]; then
+    echo $USAGE
+    exit 1
+fi
+
+pyver=saucerc/controller/version.py
+version=$(grep build $pyver | awk -F= '{print $2}' | tr -d ' ')
+
+git tag $force "sauce-rc-build-${version}"

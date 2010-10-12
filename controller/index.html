@@ -1,0 +1,459 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>Sauce RC</title>
+  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+  <link type="text/css" href= "css/jquery-ui-theme/jquery-ui-1.8.4.custom.css" rel="stylesheet" />
+  <link type="text/css" href= "css/controller.css" rel="stylesheet" />
+  <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui-1.8.4.custom.min.js"></script>
+  <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+  <script type="text/javascript" src="js/ba-linkify.min.js"></script>
+  <script type="text/javascript" src="js/controller.js"></script>
+</head>
+
+<body>
+  <!-- Highlights / Errors -->
+  <div id="new_version" class="top-notification ui-widget ui-helper-hidden ui-state-highlight ui-corner-all">
+      <p><span class="ui-icon ui-icon-info" style="float: left; margin:0 0.3em;"></span>
+      <strong>Update Available</strong>
+      <span class="message-detail">Sauce RC <span class="version"></span> is available.</span>
+      <a href="#" id="version_update_link">Download now!</a></p>
+  </div>
+
+  <div id="alert-box" class="top-notification ui-widget ui-helper-hidden ui-state-error ui-corner-all">
+      <p><span class="ui-icon ui-icon-alert" style="float: left; margin:0 0.3em;"></span>
+      <strong></strong> <span class="message-detail"></span></p>
+  </div>
+
+  <div id="message-box" class="top-notification ui-widget ui-helper-hidden ui-state-highlight ui-corner-all">
+      <p><span class="ui-icon ui-icon-info" style="float: left; margin:0 0.3em;"></span>
+      <strong></strong> <span class="message-detail"></span></p>
+  </div>
+  <div id="header">
+  </div>
+
+
+  <div id="save-dialog" class="dialog">
+    <p>Restart server with the new preferences?</p>
+  </div>
+
+  <div id="restore-dialog" class="dialog">
+    <p>Are you sure you want to restore the default preferences?</p>
+    <p>You will lose the current configuration.</p>
+  </div>
+
+  <div id="prefs-loss-dialog" class="dialog">
+    <p>Are you sure you want to leave the preferences tab?</p>
+    <p>You will lose any unsaved changes.</p>
+  </div>
+
+  <div id="prefs-refresh-dialog" class="dialog">
+    <p>Are you sure you want to reload the current preferences?</p>
+    <p>You will lose any unsaved changes.</p>
+  </div>
+
+  <div id="incorrect-prefs-dialog" class="dialog">
+    <p>The preferences you are trying to set are not for the current mode.</p>
+    <p>Please <a href="#" id="mode-switch-link">switch the current execution mode</a> and then try again.</p>
+  </div>
+
+  <div id="about-dialog" class="dialog">
+      <p>This is Sauce RC version <span class="version"></span> (build <span class="build"></span>).</p>
+      <p>Sauce RC is based on <a target="_blank" href="http://seleniumhq.org">Selenium</a> <span class="selenium-version"></span>.</p>
+      <span>
+          <img src="images/selenium-rc-logo.png" alt="Selenium" class="logo" />
+
+          <img src="images/sauce-logo.png" alt="Sauce Labs" class="logo" />
+      </span>
+  </div>
+
+  <div id="control" class="ui-widget ui-widget-content ui-corner-all">
+      <img src="images/sauce-rc-logo.png" alt="Sauce RC" style="float:left;clear:none;margin-top:15px;margin-left:10px;"/>
+      <p class="right" id="server-control">
+          Sauce RC
+          <select name="mode" id="mode">
+              <option value="Selenium RC">Local mode</option>
+              <option value="Sauce OnDemand">Cloud mode</option>
+          </select> 
+          <span id="sel-status" class="status">
+              <img class="running-img" src="images/nuvola/running.png" alt="Running" />
+              <img class="not-running-img" src="images/nuvola/not-running.png" alt="Not Running" />
+              <img class="unknown-img" src="images/nuvola/unknown.png" alt="Unknown" />
+          </span>
+          <a href="#" class="start-control" id="start-server" name="start_server">Start</a>
+          <a href="#" class="stop-control" id="stop-server" name="stop_server">Stop</a>
+      </p>
+      <!-- coming soon!
+      <p class="right" id="tunnel-control">
+          Sauce Tunnel:
+          <span id="tunnel-status" class="status">
+              <img class="running-img" src="images/nuvola/running.png" alt="Running"/>
+              <img class="not-running-img" src="images/nuvola/not-running.png" alt="Not Running"/>
+              <img class="unknown-img" src="images/nuvola/unknown.png" alt="Unknown"/>
+          </span>
+          <a href="#" class="start-control" id="start-tunnel" name="start_tunnel">Start</a>
+          <a href="#" class="stop-control" id="stop-tunnel" name="stop_tunnel">Stop</a>
+      </p>
+      -->
+
+  </div>
+
+  <div id="maintabs">
+  <!-- Main Tabs -->
+
+    <ul>
+      <li><a href="#maintabs-log">Log</a></li>
+      <li><a href="#maintabs-htmlsuite">HTML Suite</a></li>
+      <li><a href="#maintabs-prefs">Preferences</a></li>
+    </ul>
+
+    <div id="maintabs-log">
+      <!-- Server -->
+
+      <div id="sel-output" class="highlight">
+
+      </div>
+
+      <p>
+          <span class="fright">
+              Refresh every
+              <select id="log-refresh-rate">
+                  <option value="1000">1 second</option>
+                  <option value="3000">3 seconds</option>
+                  <option value="5000">5 seconds</option>
+                  <option value="10000">10 seconds</option>
+              </select>
+
+              <a href="#" id="clear-log">Clear Log</a>
+              <a href="/saucerc.log" target="_blank" id="get-full-log">Get Full Log</a>
+          </span>
+          <input type="checkbox" name="log-highlight" id="log-highlight"
+           checked="checked" />
+          <label for="log-highlight">Hightlight Log</label>
+          <input type="checkbox" name="log-autoscroll" id="log-autoscroll"
+           checked="checked" />
+          <label for="log-autoscroll">Auto Scroll Log</label>
+      </p>
+
+    </div>
+
+    <div id="maintabs-htmlsuite">
+        <div class="ui-widget-content ui-corner-all">
+        <form id="htmlsuite" method="get" action="htmlsuite">
+            <p><label for="suiteFile">Suite File</label>
+            <input id="suiteFile" name="suiteFile"
+            title="The absolute path to the HTML test suite"
+            class="required"/></p>
+
+            <p><label for="resultFile">Result File</label>
+            <input id="resultFile" name="resultFile"
+            title="The absolute path to the result file Sauce RC will create"
+            class="required"/></p>
+
+            <p><label for="startURL">Start URL</label>
+            <input id="startURL" name="startURL"
+            title="The URL over which the test suite will be ran"
+            class="required url"/></p>
+
+            <div id="htmlsuiteBrowser">
+            <p><label for="htmlsuiteBrowser">Browser</label>
+            <input type="radio" name="htmlsuiteBrowser"
+            id="htmlsuiteBrowser-ie" value="*iexplore" />
+            <label for="htmlsuiteBrowser-ie">Internet Explorer</label><br />
+            <input type="radio" name="htmlsuiteBrowser" id="htmlsuiteBrowser-ff"
+            value="*firefox" />
+            <label for="htmlsuiteBrowser-ff">Firefox</label><br />
+            <input type="radio" name="htmlsuiteBrowser" id="htmlsuiteBrowser-op"
+            value="*opera" />
+            <label for="htmlsuiteBrowser-op">Opera</label><br />
+            <input type="radio" name="htmlsuiteBrowser" id="htmlsuiteBrowser-sa"
+            value="*safari" />
+            <label for="htmlsuiteBrowser-sa">Safari</label><br />
+            <input type="radio" name="htmlsuiteBrowser" id="htmlsuiteBrowser-gc"
+            value="*googlechrome" />
+            <label for="htmlsuiteBrowser-gc">Google Chrome</label></p>
+            </div>
+
+            <p class="right">
+              <a id="htmlsuite-submit" href="#" >Run</a>
+            </p>
+        </form>
+        </div>
+    </div>
+
+    <div id="maintabs-prefs">
+    <!-- Preferences -->
+
+        <form id="preferences" method="get" action="save">
+            <p><label for="allmodes-port">Port</label>
+            <input id="allmodes-port" name="allmodes-port"
+            title="Port to listen on"/></p>
+
+      <div id="prefstabs">
+      <!-- Preferences Tabs -->
+        <ul>
+          <li><a href="#prefstabs-1">Local Mode</a></li>
+
+          <li><a href="#prefstabs-2">Cloud Mode</a></li>
+
+          <!-- coming soon!
+          <li><a href="#prefstabs-3">Sauce Tunnel</a></li>
+          -->
+
+        </ul>
+
+        <div id="prefstabs-1">
+          <!-- Logging -->
+
+          <p><input type="checkbox" name="selenium-debug" id="selenium-debug"
+          title="Puts Sauce RC in debug mode, with more trace information and diagnostics on the console." />
+          <label for="selenium-debug">Debug Mode</label></p>
+
+          <p><input type="checkbox" name="selenium-browserSideLog"
+          id="selenium-browserSideLog"
+          title="Enables logging on the browser side; log messages will be transmitted to the server.  This can affect performance." />
+          <label for="browserSideLog">Browser Side Log</label></p>
+
+          <!-- Connection -->
+
+          <p><label for="selenium-timeout">Reply Timeout</label>
+          <input type="text" name="selenium-timeout" id="selenium-timeout"
+          title="The number of seconds Sauce RC should wait for data from a test script before timing out."</p>
+
+          <p><input type="checkbox" name="selenium-avoidproxy"
+          id="selenium-avoidproxy"
+          title="By default, Sauce RC proxies every browser request; set this flag to make the browser use the proxy only for urls containing '/selenium-server'." />
+          <label for="selenium-avoidproxy">Avoid Proxy</label></p>
+
+          <p><input type="checkbox" name="selenium-trustAllSSLCertificates"
+          id="selenium-trustAllSSLCertificates" title="Forces the Selenium proxy to trust all SSL certificates. This doesn't work in browser configurations that don't use the Selenium proxy." />
+          <label for="selenium-trustAllSSLCertificates">
+              Trust All SSL Certificates</label></p>
+
+          <p><input type="checkbox" name="selenium-proxyInjectionMode"
+          id="selenium-proxyInjectionMode"
+          title="Puts Sauce RC in proxy injection mode, where the Selenium server acts as a proxy server for all content going to the test application.  In this mode, multiple domains can be visited, and the options below are supported." />
+          <label for="selenium-proxyInjectionMode">Proxy injection mode</label></p>
+
+          <div id="proxyInjectionSubOpts">
+
+              <p><label for="selenium-dontInjectRegex">Don't Inject Regex </label>
+              <input type="text" name="selenium-dontInjectRegex"
+              id="selenium-dontInjectRegex"
+              title="A regular expression that, when matched, will cause proxy injection mode can to bypass injection." /></p>
+
+              <p><label for="selenium-userJsInjection">User Js Injection </label>
+              <input type="text" name="selenium-userJsInjection"
+              id="selenium-userJsInjection"
+              title="A JavaScript file which will then be injected into all pages."/></p>
+
+              <p><label>User Content Transformation </label></p>
+              <br />
+              <p><label for="selenium-userContentTransformation-regex">Replace </label>
+              <input type="text" name="selenium-userContentTransformation-regex"
+              id="selenium-userContentTransformation-regex"
+              title="A regular expression which is matched against all test HTML content; the second is a string which will replace matches. These flags can be used any number of times. A simple example of how this could be useful: if you add https and http then all https strings in the HTML of the test application will be changed to be http."/></p>
+
+              <p><label for="selenium-userContentTransformation-replacement">With </label>
+              <textarea name="selenium-userContentTransformation-replacement"
+              id="selenium-userContentTransformation-replacement"
+              title="A regular expression which is matched against all test HTML content; the second is a string which will replace matches. These flags can be used any number of times. A simple example of how this could be useful: if you add https and http then all https strings in the HTML of the test application will be changed to be http." rows="4" cols="20" ></textarea>
+              </p>
+
+          </div>
+
+          <!-- Browsers -->
+
+          <p><input type="checkbox" name="selenium-singleWindow" id="selenium-singleWindow"
+          title="Execute the test web site in a frame. This mode should only be selected if the application under test does not use frames."/>
+          <label for="selenium-singleWindow">Single Window Mode</label></p>
+
+          <p><input type="checkbox" name="selenium-ensureCleanSession"
+          id="selenium-ensureCleanSession"
+          title="If the browser does not have user profiles, make sure every new session has no artifacts from previous sessions.  For example, enabling this option will cause all user cookies to be archived before launching IE, and restored after IE is closed." />
+          <label for="selenium-ensureCleanSession">Ensure Clean Session</label></p>
+
+          <p><input type="checkbox" name="selenium-browserSessionReuse"
+          id="selenium-browserSessionReuse"
+          title="Stops re-initialization and spawning of the browser between tests"/>
+          <label for="selenium-browserSessionReuse">Browser Session Reuse</label></p>
+
+          <p><label for="selenium-profilesLocation">Profiles Location</label>
+          <input type="text" name="selenium-profilesLocation"
+          id="selenium-profilesLocation"
+          title="Specifies the directory that holds the profiles that Java clients can use to start up selenium. Currently supported for Firefox only." /></p>
+
+          <p><label for="selenium-firefoxProfileTemplate">Firefox Profile Template</label>
+          <input type="text" name="selenium-firefoxProfileTemplate"
+          id="selenium-firefoxProfileTemplate"
+          title="Normally, Sauce RC generates a fresh empty Firefox profile every time it launches.  You can specify a directory here from which to copy your profile instead." /></p>
+
+          <input type="checkbox" name="selenium-forcedBrowserMode"
+          id="selenium-forcedBrowserMode"
+          title="Sets the browser mode to the one specified here for all sessions, disregarding what is specified by test scripts." />
+          <label for="selenium-forcedBrowserMode">Forced browser mode</label>
+
+          <div id="forced-browser">
+              <input type="radio" name="selenium-browserForce" id="iebrowserForce"
+              value="*iexplore" />
+              <label for="iebrowserForce">Internet Explorer</label><br />
+              <input type="radio" name="selenium-browserForce" id="ffbrowserForce"
+              value="*firefox" />
+              <label for="ffbrowserForce">Firefox</label><br />
+              <input type="radio" name="selenium-browserForce" id="opbrowserForce"
+              value="*opera" />
+              <label for="opbrowserForce">Opera</label><br />
+              <input type="radio" name="selenium-browserForce" id="sfbrowserForce"
+              value="*safari" />
+              <label for="sfbrowserForce">Safari</label><br />
+              <input type="radio" name="selenium-browserForce" id="gcbrowserForce"
+              value="*googlechrome" />
+              <label for="gcbrowserForce">Google Chrome</label><br />
+          </div>
+
+          <!-- Selenium commands -->
+
+          <p><label for="selenium-userExtensions">User extensions</label>
+              <input type="text" name="selenium-userExtensions" id="selenium-userExtensions"
+                     title="Indicates a JavaScript file that will be loaded into Selenium."/>
+          </p>
+        </div>
+
+        <div id="prefstabs-2">
+        <!-- Sauce OnDemand -->
+            <h4>User Information</h4>
+            <p>
+                <label for="ondemand-username">User</label>
+                <input type="text" size="30" name="ondemand-username"
+                 id="ondemand-username" title="Sauce Labs username" />
+                <a href="http://saucelabs.com/signup" target="_blank"
+                 title="Don't have a username?  Sign up here." id="signup-link">
+                   <span class="ui-icon ui-icon-help"></span>
+                </a>
+            </p>
+            <p>
+                <label for="ondemand-access-key">Access Key</label>
+                <input type="text" size="30" name="ondemand-access-key"
+                 id="ondemand-access-key" title="Sauce Labs access key" />
+                <a href="https://saucelabs.com/account" target="_blank"
+                 title="You can find your access key your Sauce OnDemand account page."
+                 id="access-key-link">
+                   <span class="ui-icon ui-icon-help"></span>
+                </a>
+            </p>
+            <h4> Test Configuration </h4>
+            <!--
+            <input type="checkbox" name="ondemand-force" id="ondemand-force"/>
+            Override user settings
+            -->
+            <p>
+                <label for="ondemand-os">Operating System</label>
+                <select name="ondemand-os" id="ondemand-os"
+                title="The OS on which your tests will run.">
+                </select>
+            </p>
+            <p>
+                <label for="ondemand-browser">Browser</label>
+                <select name="ondemand-browser" id="ondemand-browser"
+                title="The browser in which your tests will run.">
+                </select>
+            </p>
+            <p>
+                <label for="ondemand-browser-version">Browser Version
+                </label>
+                <select name="ondemand-browser-version"
+                title="The browser version in which your tests will run."
+                id="ondemand-browser-version">
+                </select>
+            </p>
+            <p>
+                <input type="checkbox" name="ondemand-record-video"
+                id="ondemand-record-video"
+                title="Record videos of tests run through Sauce OnDemand." />
+                <label for="ondemand-record-video">Record Video</label>
+            </p>
+            <p>
+                <input type="checkbox" name="ondemand-public"
+                id="ondemand-public"
+                title="Makes job results page accessible without authentication." />
+                <label for="ondemand-public">Public Jobs</label>
+            </p>
+            <p>
+                <label for="ondemand-max-duration">Max Duration</label>
+                <input name="ondemand-max-duration" id="ondemand-max-duration"
+                title="Maximum test duration in seconds; this is a safety mechanism, to prevent infinite loops in your tests from consuming resources indefinitely." />
+            </p>
+            <p>
+                <label for="ondemand-user-extensions-url">User Extensions</label>
+                <input name="ondemand-user-extensions-url"
+                id="ondemand-user-extensions-url" title="You can provide a url to a user-extensions.js file that we will load into our Selenium RC servers when your tests run on the cloud." />
+                <a href="#" title="Use more extensions." class="cloner">
+                    <span class="ui-icon ui-icon-plus"></span></a>
+            </p>
+            <p>
+                <label for="ondemand-firefox-profile-url">Firefox Profile</label>
+                <input name="ondemand-firefox-profile-url"
+                id="ondemand-firefox-profile-url" title="Custom Firefox profiles are available; allowing you to customize the Firefox browser on the OnDemand service. The profile needs to be formatted as the zipped contents of the Firefox profile directory you wish to use. Additionally, it needs to be served from a URL accessible from the chef similar to user-extensions.  Note: If you actually zip the directory it will not work, the zip file needs to contain the contents of the profile, not a directory of the contents of the file." />
+            </p>
+            <p>
+                <label for="ondemand-job-name">Job Name</label>
+                <input name="ondemand-job-name" id="ondemand-job-name"
+                title="(Optional.) You can name your tests to make it easier to find them in the Sauce OnDemand management interface." />
+            </p>
+        </div>
+
+        <!-- coming soon!
+        <div id="prefstabs-3">
+            <p>
+                <label for="tunnel-host">Web Server</label>
+                <input name="tunnel-host" id="tunnel-host"
+                title="The hostname of the local webserver you want Sauce to
+                have access to." />
+            </p>
+            <p>
+                <label for="tunnel-domain">Domain</label>
+                <input class="tunnel-domain" name="tunnel-domain" id="tunnel-domain"
+                title="The domain Sauce will use to access your webserver." />
+                <a href="#" title="Tunnel more domains." class="cloner">
+                    <span class="ui-icon ui-icon-plus"></span></a>
+            </p>
+            <p>
+                <label for="tunnel-port">Port</label>
+                <input class="tunnel-port" name="tunnel-port" id="tunnel-port"
+                title="The ports you want to tunnel." />
+                <a href="#" title="Tunnel more ports." class="cloner">
+                    <span class="ui-icon ui-icon-plus"></span></a>
+            </p>
+        </div>
+        -->
+
+        <div class="ui-tabs-panel">
+              <p class="right">
+                  <a href="#" id="refresh-prefs">Reload Current</a>
+                  <a href="#" id="restore-prefs">Restore Default</a>
+                  <a href="#" id="save-prefs">Save</a>
+              </p>
+        </div>
+      </form>
+
+
+      </div>
+    </div>
+
+  </div>
+  <div id="footer" class="ui-widget ui-widget-header ui-corner-all">
+      <center>
+          <ul>
+              <li><a href="#" id="about">About</a></li>
+              <li><a href="/static/license.html" target="_blank" id="license">License</a></li>
+              <li><a href="/static/docs/index.html" target="_blank" id="docs">Documentation</a></li>
+          </ul>
+      </center>
+  </div>
+</body>
+</html>

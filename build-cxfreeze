@@ -1,0 +1,10 @@
+#!/bin/bash
+
+pyver=$(python -c 'import sys; print "%d.%d" % sys.version_info[:2]')
+dest="build/exe.$(uname)-$(uname -m)-${pyver}"
+dest=$(echo $dest | tr '[A-Z]' '[a-z]')
+
+python cxfreeze_setup.py build
+cp saucerc/gui/*.ico $dest
+cp -r saucerc/controller/{js,css,index.html} $dest
+cp saucerc/controller/*.jar $dest

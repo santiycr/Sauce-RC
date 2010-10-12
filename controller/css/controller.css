@@ -1,0 +1,163 @@
+body { 
+    font: 62.5% "Trebuchet MS", sans-serif; 
+    margin: 5px;
+}
+
+#message-box {
+    z-index:10;
+}
+
+#alert-box {
+    z-index:100;
+}
+
+#control {
+    padding:0.4em;
+}
+
+#maintabs {
+    overflow:auto;
+    padding:5px;
+}
+
+#maintabs-htmlsuite>div {
+    padding:10px;
+}
+
+#header {
+    overflow:hidden;
+}
+
+h1 {
+    display:inline;
+    height:40px;
+}
+
+.logo {
+    color: white;
+}
+
+input[name=logfile] {
+    width: 200px;
+}
+
+input+a {
+    position:absolute;
+}
+
+#preferences label, #htmlsuite label {
+    min-width:200px;
+    margin:2px 4px 2px 4px;
+}
+
+#preferences label:first-child, #htmlsuite label:first-child {
+    width:200px;
+    float: left;
+}
+
+#sel-output {
+    padding:5px;
+    border:1px solid gray;
+    white-space:pre;
+    overflow:auto;
+    width:100%;
+    min-height:490px;
+    max-height:490px;
+    font-family: Monospace;
+    font-size: 8pt;
+}
+
+.right {
+    text-align:right;
+}
+
+.fright {
+    float:right;
+}
+
+#log-lines {
+    width:30px;
+}
+
+#sel-output.highlight .value {color:#4EAADA}
+#sel-output.highlight a {color:#4EAADA}
+#sel-output.highlight .command {color:#069;font-weight:bold;}
+#sel-output.highlight .ok {color:#4C8E0C}
+#sel-output.highlight .error {color:red;font-weight:bold;}
+#sel-output.highlight .important {color:#069;}
+#sel-output.highlight .secondary {color:#666;}
+
+#tunnel-status img, #sel-status img {
+    position:relative;
+    top:8px;
+    display:none; // js will who this later
+}
+
+.status-running {color:#4C8E0C}
+.status-not-running {color:red}
+
+.top-notification {
+    position:absolute;
+    width: 50%;
+    margin: -5px 0 0 25%;
+}
+
+.top-notification p {
+    padding: 0;
+    margin: 5px;
+    text-align: center;
+}
+
+.dialog {
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    text-align: center;
+}
+
+#port, #timeout {
+    width: 60px;
+}
+
+#proxyInjectionSubOpts {
+    display:none;
+    overflow:auto;
+}
+
+#forced-browser {
+    display:none;
+    overflow:auto;
+}
+
+#footer ul {
+    list-style-type:none;
+    padding:0;
+    overflow:auto;
+    text-align:center;
+    display: inline-block;
+}
+
+#footer ul li {
+    margin:0;
+    float: left;
+    padding-right: 10px;
+    border-right: 1px solid #ccc;
+    padding-left: 10px;
+}
+
+#footer ul li:last-child {
+    border-right: none;
+}
+
+label.error {
+    color: red;
+}
+
+#htmlsuiteBrowser label:first-child {
+margin-bottom: 100px;
+}
+
+#htmlsuiteBrowser label.error {
+    position: absolute;
+    margin-left: 140px;
+}
+

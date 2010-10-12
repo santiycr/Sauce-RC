@@ -1,0 +1,8 @@
+*.dmg
+*.exe
+*.mpkg
+*.pyc
+*.swp
+docs/index.html
+build
+dist
